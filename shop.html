@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kaori – Tienda</title>
+  <link href__="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Nunito', sans-serif; background: #faf8f5; color: #2d1b69; }
+    h1,h2,h3,h4 { font-family: 'Cormorant Garamond', serif; }
+    a { text-decoration: none; color: inherit; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 72px; background: rgba(250,248,245,0.95); backdrop-filter: blur(8px); border-bottom: 1px solid #f3e8ff; }
+    .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; letter-spacing: 0.2em; color: #4c1d95; }
+    .nav-links { display: flex; gap: 2rem; }
+    .nav-links a { font-size: 0.85rem; color: #4b5563; }
+    .nav-links a:hover { color: #7c3aed; }
+    .nav-cart { background: #7c3aed; color: white; border: none; border-radius: 9999px; padding: 0.5rem 1.2rem; cursor: pointer; font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 600; }
+
+    .shop-header { padding: 6rem 1.5rem 3rem; background: linear-gradient(to bottom, #faf5ff, white); text-align: center; }
+    .shop-label { font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; color: #a855f7; margin-bottom: 0.5rem; }
+    .shop-header h1 { font-size: clamp(2.5rem, 5vw, 4rem); color: #4c1d95; margin-bottom: 0.8rem; }
+    .shop-header p { color: #6b7280; }
+
+    .shop-body { max-width: 80rem; margin: 0 auto; padding: 2rem 1.5rem 4rem; display: flex; gap: 2rem; }
+
+    /* SIDEBAR */
+    .sidebar { width: 220px; flex-shrink: 0; }
+    .sidebar h4 { font-family: 'Nunito', sans-serif; font-weight: 700; color: #4c1d95; font-size: 0.875rem; margin-bottom: 0.8rem; }
+    .filter-btn { display: block; width: 100%; text-align: left; padding: 0.4rem 0.75rem; border-radius: 0.5rem; font-size: 0.875rem; cursor: pointer; border: none; background: transparent; color: #4b5563; transition: background 0.15s; margin-bottom: 0.2rem; }
+    .filter-btn.active { background: #ede9fe; color: #6d28d9; font-weight: 600; }
+    .filter-btn:hover:not(.active) { background: #f5f3ff; }
+    .filter-section { margin-bottom: 1.5rem; }
+
+    /* TOOLBAR */
+    .toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; gap: 1rem; flex-wrap: wrap; }
+    .search-wrap { position: relative; }
+    .search-wrap input { padding: 0.5rem 0.75rem 0.5rem 2.2rem; border: 1px solid #e9d5ff; border-radius: 9999px; font-family: 'Nunito', sans-serif; outline: none; font-size: 0.875rem; width: 260px; }
+    .search-icon { position: absolute; left: 0.7rem; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 0.9rem; }
+    select.sort { border: 1px solid #e9d5ff; border-radius: 9999px; padding: 0.5rem 1rem; font-family: 'Nunito', sans-serif; font-size: 0.875rem; outline: none; color: #4c1d95; }
+
+    /* PRODUCTS */
+    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.5rem; }
+    .product-card { background: white; border-radius: 1rem; overflow: hidden; border: 1px solid #f3e8ff; transition: box-shadow 0.2s; }
+    .product-card:hover { box-shadow: 0 8px 30px rgba(124,58,237,0.12); }
+    .product-card a { display: block; }
+    .product-card img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+    .product-info { padding: 1rem; }
+    .product-cat { font-size: 0.7rem; color: #a855f7; text-transform: uppercase; letter-spacing: 0.1em; }
+    .product-info h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; color: #4c1d95; margin: 0.3rem 0; }
+    .product-price { color: #7c3aed; font-weight: 700; }
+    .add-cart-btn { width: 100%; margin-top: 0.8rem; background: #f3e8ff; color: #7c3aed; border: none; border-radius: 9999px; padding: 0.6rem; font-family: 'Nunito', sans-serif; font-weight: 600; cursor: pointer; font-size: 0.85rem; transition: background 0.2s; }
+    .add-cart-btn:hover { background: #7c3aed; color: white; }
+    .results-count { font-size: 0.875rem; color: #9ca3af; margin-bottom: 1rem; }
+
+    .main-area { flex: 1; min-width: 0; }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .shop-body { padding-top: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href__="/" class="nav-logo">KAORI</a>
+    <div class="nav-links">
+      <a href__="/shop.html">Tienda</a>
+      <a href__="/about.html">Nosotras</a>
+      <a href__="/contact.html">Contacto</a>
+    </div>
+    <button class="nav-cart">🛒 Carrito (0)</button>
+  </nav>
+
+  <div class="shop-header">
+    <p class="shop-label">Nuestra Tienda</p>
+    <h1>Tienda</h1>
+    <p>Descubre nuestra selección de productos artesanales creados con amor</p>
+  </div>
+
+  <div class="shop-body">
+    <!-- SIDEBAR FILTERS -->
+    <aside class="sidebar">
+      <div class="filter-section">
+        <h4>Categorías</h4>
+        <button class="filter-btn active">Todas las categorías</button>
+        <button class="filter-btn">Velas</button>
+        <button class="filter-btn">Minerales</button>
+        <button class="filter-btn">Joyería</button>
+        <button class="filter-btn">Ambientación</button>
+        <button class="filter-btn">Corporal</button>
+        <button class="filter-btn">Quemadores</button>
+      </div>
+      <div class="filter-section">
+        <h4>Precio</h4>
+        <button class="filter-btn active">Todos los precios</button>
+        <button class="filter-btn">Hasta 15€</button>
+        <button class="filter-btn">15€ – 30€</button>
+        <button class="filter-btn">30€ – 50€</button>
+        <button class="filter-btn">Más de 50€</button>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main-area">
+      <div class="toolbar">
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" placeholder="Buscar productos..." id="searchInput" oninput="filterProducts()" />
+        </div>
+        <select class="sort" id="sortSelect" onchange="filterProducts()">
+          <option value="newest">Más recientes</option>
+          <option value="price-asc">Precio: menor a mayor</option>
+          <option value="price-desc">Precio: mayor a menor</option>
+          <option value="name">Nombre A–Z</option>
+        </select>
+      </div>
+
+      <p class="results-count" id="resultsCount">Cargando productos...</p>
+
+      <div class="products-grid" id="productsGrid">
+        <!-- Productos se renderizan aquí. 
+             En producción, conecta a tu API/backend para obtenerlos.
+             Ejemplo de tarjeta estática: -->
+        <div class="product-card">
+          <a href__="/product.html?id=1">
+            <img src="https://images.unsplash.com/photo-1602178478026-72d94a3e8e3f?w=400&q=80" alt="Vela Artesanal" />
+          </a>
+          <div class="product-info">
+            <p class="product-cat">Velas</p>
+            <h4>Vela Artesanal de Lavanda</h4>
+            <p class="product-price">18,00 €</p>
+            <button class="add-cart-btn">Añadir al carrito</button>
+          </div>
+        </div>
+        <div class="product-card">
+          <a href__="/product.html?id=2">
+            <img src="https://images.unsplash.com/photo-1557053910-d9eadeed1c58?w=400&q=80" alt="Mineral Amatista" />
+          </a>
+          <div class="product-info">
+            <p class="product-cat">Minerales</p>
+            <h4>Amatista Natural</h4>
+            <p class="product-price">24,00 €</p>
+            <button class="add-cart-btn">Añadir al carrito</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Filtro básico cliente (para cuando tengas datos reales)
+    function filterProducts() {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      const cards = document.querySelectorAll('.product-card');
+      let visible = 0;
+      cards.forEach(card => {
+        const name = card.querySelector('h4').textContent.toLowerCase();
+        if (name.includes(q)) { card.style.display = ''; visible++; }
+        else { card.style.display = 'none'; }
+      });
+      document.getElementById('resultsCount').textContent = `${visible} producto${visible !== 1 ? 's' : ''} encontrado${visible !== 1 ? 's' : ''}`;
+    }
+    filterProducts();
+  </script>
+</body>
+</html>

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kaori – Finalizar Compra</title>
+  <link href__="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Nunito', sans-serif; background: #faf8f5; color: #2d1b69; }
+    h1,h2,h3 { font-family: 'Cormorant Garamond', serif; }
+    a { text-decoration: none; color: inherit; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 72px; background: rgba(250,248,245,0.95); backdrop-filter: blur(8px); border-bottom: 1px solid #f3e8ff; }
+    .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; letter-spacing: 0.2em; color: #4c1d95; }
+
+    .checkout-page { max-width: 72rem; margin: 0 auto; padding: 6rem 1.5rem 4rem; }
+    .breadcrumb { margin-bottom: 1.5rem; font-size: 0.875rem; }
+    .breadcrumb a { color: #7c3aed; }
+    h1.page-title { font-size: clamp(1.8rem, 4vw, 2.5rem); color: #4c1d95; margin-bottom: 2rem; }
+
+    .checkout-grid { display: grid; gap: 2rem; }
+    @media(min-width: 1024px) { .checkout-grid { grid-template-columns: 3fr 2fr; } }
+
+    .card { background: white; border-radius: 1rem; padding: 1.5rem; border: 1px solid #f3e8ff; margin-bottom: 1.5rem; }
+    .card h2 { font-size: 1.2rem; color: #4c1d95; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 0.7rem; }
+    .step-num { width: 32px; height: 32px; border-radius: 50%; background: #f3e8ff; color: #7c3aed; font-size: 0.85rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; font-family: 'Nunito', sans-serif; }
+
+    .form-row { display: grid; gap: 1rem; }
+    @media(min-width: 640px) { .form-row { grid-template-columns: 1fr 1fr; } }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    label { font-size: 0.875rem; font-weight: 600; color: #4c1d95; }
+    input, textarea, select { font-family: 'Nunito', sans-serif; border: 1px solid #e9d5ff; border-radius: 0.75rem; padding: 0.7rem 1rem; font-size: 0.9rem; outline: none; background: white; color: #2d1b69; width: 100%; transition: border-color 0.2s; }
+    input:focus, textarea:focus { border-color: #a855f7; }
+    textarea { resize: none; }
+    .full { grid-column: 1 / -1; }
+
+    /* SHIPPING OPTIONS */
+    .shipping-option { display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 2px solid #f3e8ff; border-radius: 0.75rem; cursor: pointer; margin-bottom: 0.75rem; transition: border-color 0.2s; }
+    .shipping-option.selected { border-color: #7c3aed; background: #faf5ff; }
+    .shipping-option input[type=radio] { accent-color: #7c3aed; width: 18px; height: 18px; flex-shrink: 0; }
+    .ship-label { flex: 1; }
+    .ship-label strong { display: block; font-size: 0.9rem; color: #4c1d95; }
+    .ship-label span { font-size: 0.8rem; color: #6b7280; }
+    .ship-cost { font-weight: 700; color: #7c3aed; font-size: 0.9rem; }
+
+    /* PAYMENT */
+    .pay-option { display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 2px solid #f3e8ff; border-radius: 0.75rem; cursor: pointer; margin-bottom: 0.75rem; transition: border-color 0.2s; }
+    .pay-option.selected { border-color: #7c3aed; background: #faf5ff; }
+    .pay-option input[type=radio] { accent-color: #7c3aed; width: 18px; height: 18px; flex-shrink: 0; }
+    .pay-label strong { display: block; font-size: 0.875rem; color: #4c1d95; }
+    .pay-label span { font-size: 0.75rem; color: #6b7280; }
+    .transfer-info { background: #fffbeb; border: 1px solid #fde68a; border-radius: 0.75rem; padding: 1rem; font-size: 0.875rem; color: #92400e; margin-top: 0.5rem; }
+
+    /* CARD FIELDS */
+    .card-fields { border: 1px solid #e9d5ff; border-radius: 0.75rem; padding: 1rem; margin-top: 0.5rem; display: flex; flex-direction: column; gap: 1rem; }
+    .card-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .secure-note { font-size: 0.75rem; color: #9ca3af; display: flex; align-items: center; gap: 0.3rem; }
+
+    /* SUMMARY */
+    .summary-sticky { position: sticky; top: 88px; }
+    .order-item { display: flex; gap: 0.75rem; margin-bottom: 1rem; }
+    .order-item img { width: 64px; height: 64px; object-fit: cover; border-radius: 0.5rem; flex-shrink: 0; }
+    .order-item-info h4 { font-family: 'Nunito', sans-serif; font-weight: 600; font-size: 0.875rem; color: #4c1d95; margin-bottom: 0.2rem; }
+    .order-item-info p { font-size: 0.75rem; color: #6b7280; }
+    .order-item-price { font-weight: 700; font-size: 0.875rem; color: #4c1d95; }
+    .totals { border-top: 1px solid #f3e8ff; padding-top: 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+    .total-row { display: flex; justify-content: space-between; font-size: 0.875rem; color: #4b5563; }
+    .total-final { display: flex; justify-content: space-between; font-weight: 700; font-size: 1.1rem; border-top: 1px solid #f3e8ff; padding-top: 0.75rem; margin-top: 0.5rem; color: #4c1d95; }
+    .trust { border-top: 1px solid #f3e8ff; padding-top: 1rem; margin-top: 1rem; display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.875rem; color: #4b5563; }
+    .trust-row { display: flex; align-items: center; gap: 0.6rem; }
+
+    .btn-submit { width: 100%; background: #7c3aed; color: white; border: none; border-radius: 9999px; padding: 1.2rem; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 1rem; cursor: pointer; transition: background 0.2s; }
+    .btn-submit:hover { background: #6d28d9; }
+    .btn-submit:disabled { background: #c4b5fd; cursor: not-allowed; }
+
+    .success-screen { min-height: 60vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 4rem 1.5rem; }
+    .success-circle { width: 80px; height: 80px; border-radius: 50%; background: #dcfce7; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin: 0 auto 1.5rem; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href__="/" class="nav-logo">KAORI</a>
+  </nav>
+
+  <div class="checkout-page" id="checkoutPage">
+    <nav class="breadcrumb"><a href__="/shop.html">← Volver a la tienda</a></nav>
+    <h1 class="page-title">Finalizar Compra</h1>
+
+    <div class="checkout-grid">
+      <!-- FORM -->
+      <div>
+        <form id="checkoutForm" onsubmit="submitOrder(event)">
+
+          <!-- 1. CONTACTO -->
+          <div class="card">
+            <h2><span class="step-num">1</span> Datos de Contacto</h2>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Nombre completo *</label>
+                <input name="name" type="text" required />
+              </div>
+              <div class="form-group">
+                <label>Email *</label>
+                <input name="email" type="email" required />
+              </div>
+              <div class="form-group full">
+                <label>Teléfono *</label>
+                <input name="phone" type="tel" required />
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. DIRECCIÓN -->
+          <div class="card" id="addressCard">
+            <h2><span class="step-num">2</span> Dirección de Envío</h2>
+            <div class="form-row">
+              <div class="form-group full">
+                <label>Dirección *</label>
+                <input name="address" type="text" placeholder="Calle, número, piso..." required />
+              </div>
+              <div class="form-group">
+                <label>Ciudad *</label>
+                <input name="city" type="text" required />
+              </div>
+              <div class="form-group">
+                <label>Código Postal *</label>
+                <input name="postal" type="text" required />
+              </div>
+              <div class="form-group full">
+                <label>Notas del pedido (opcional)</label>
+                <textarea name="notes" rows="3" placeholder="Instrucciones especiales..."></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. ENVÍO -->
+          <div class="card">
+            <h2><span class="step-num">3</span> Opciones de Envío</h2>
+            <div class="shipping-option selected" onclick="selectShipping(this, 4.95)">
+              <input type="radio" name="shipping" value="standard" checked />
+              <div class="ship-label">
+                <strong>🚚 Envío a domicilio</strong>
+                <span>3–5 días laborables</span>
+              </div>
+              <span class="ship-cost">4,95 €</span>
+            </div>
+            <div class="shipping-option" onclick="selectShipping(this, 0)">
+              <input type="radio" name="shipping" value="pickup" />
+              <div class="ship-label">
+                <strong>🏪 Recogida en tienda</strong>
+                <span>Gratis · Acordar fecha</span>
+              </div>
+              <span class="ship-cost" style="color:#16a34a">Gratis</span>
+            </div>
+          </div>
+
+          <!-- 4. PAGO -->
+          <div class="card">
+            <h2><span class="step-num">4</span> Método de Pago</h2>
+            <div class="pay-option selected" onclick="selectPayment(this, 'stripe')">
+              <input type="radio" name="payment" value="stripe" checked />
+              <div class="pay-label">
+                <strong>💳 Tarjeta de crédito / débito</strong>
+                <span>Visa, Mastercard, Amex · Pago seguro con Stripe</span>
+              </div>
+            </div>
+            <div class="pay-option" onclick="selectPayment(this, 'transfer')">
+              <input type="radio" name="payment" value="transfer" />
+              <div class="pay-label">
+                <strong>🏦 Transferencia bancaria</strong>
+                <span>Recibirás los datos bancarios por email</span>
+              </div>
+            </div>
+
+            <div class="card-fields" id="cardFields">
+              <div class="form-group">
+                <label style="font-size:0.75rem;color:#6b7280">Número de tarjeta</label>
+                <input type="text" placeholder="1234 5678 9012 3456" maxlength="19" oninput="fmtCard(this)" />
+              </div>
+              <div class="card-field-row">
+                <div class="form-group">
+                  <label style="font-size:0.75rem;color:#6b7280">Caducidad</label>
+                  <input type="text" placeholder="MM / AA" maxlength="7" oninput="fmtDate(this)" />
+                </div>
+                <div class="form-group">
+                  <label style="font-size:0.75rem;color:#6b7280">CVC</label>
+                  <input type="text" placeholder="123" maxlength="4" oninput="this.value=this.value.replace(/\D/g,'')" />
+                </div>
+              </div>
+              <p class="secure-note">🔒 Pago cifrado y seguro</p>
+            </div>
+
+            <div class="transfer-info" id="transferInfo" style="display:none">
+              🏦 Tras confirmar el pedido te enviaremos los datos bancarios por email.
+            </div>
+          </div>
+
+          <button type="submit" class="btn-submit" id="submitBtn">
+            Pagar con Stripe · <span id="totalBtn">—</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- SUMMARY -->
+      <div>
+        <div class="card summary-sticky">
+          <h2>Resumen del Pedido</h2>
+
+          <!-- Ejemplo de artículo estático. En producción, generarlo desde el carrito JS -->
+          <div class="order-item">
+            <img src="https://images.unsplash.com/photo-1602178478026-72d94a3e8e3f?w=200&q=80" alt="Vela" />
+            <div class="order-item-info" style="flex:1">
+              <h4>Vela Artesanal de Lavanda</h4>
+              <p>Cantidad: 2</p>
+            </div>
+            <span class="order-item-price">36,00 €</span>
+          </div>
+
+          <div class="totals">
+            <div class="total-row"><span>Subtotal</span><span id="subtotalDisplay">36,00 €</span></div>
+            <div class="total-row"><span>Envío</span><span id="shippingDisplay">4,95 €</span></div>
+            <div class="total-final"><span>Total</span><span id="totalDisplay">40,95 €</span></div>
+          </div>
+
+          <div class="trust">
+            <div class="trust-row">📦 Empaquetado con mimo</div>
+            <div class="trust-row">🚚 Envío en 3–5 días laborables</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="successScreen" class="success-screen" style="display:none;padding-top:100px;">
+    <div>
+      <div class="success-circle">🛍️</div>
+      <h1 style="font-size:2rem;color:#4c1d95;margin-bottom:1rem">¡Pedido Recibido!</h1>
+      <p style="color:#4b5563;margin-bottom:0.5rem">Gracias por tu compra. Nos pondremos en contacto contigo para gestionar el pago.</p>
+      <p style="color:#6b7280;font-size:0.875rem;margin-bottom:2rem">Te hemos enviado un email de confirmación.</p>
+      <a href__="/shop.html" style="background:#7c3aed;color:white;padding:1rem 2rem;border-radius:9999px;font-weight:700">Seguir Comprando</a>
+    </div>
+  </div>
+
+  <script>
+    let shippingCost = 4.95;
+    let subtotal = 36.00; // En producción: calcularlo desde el carrito
+
+    function updateTotals() {
+      const total = subtotal + shippingCost;
+      document.getElementById('subtotalDisplay').textContent = subtotal.toFixed(2) + ' €';
+      document.getElementById('shippingDisplay').textContent = shippingCost === 0 ? 'Gratis' : shippingCost.toFixed(2) + ' €';
+      document.getElementById('totalDisplay').textContent = total.toFixed(2) + ' €';
+      document.getElementById('totalBtn').textContent = total.toFixed(2) + ' €';
+    }
+
+    function selectShipping(el, cost) {
+      document.querySelectorAll('.shipping-option').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+      el.querySelector('input').checked = true;
+      shippingCost = cost;
+      const isPickup = cost === 0;
+      document.getElementById('addressCard').style.display = isPickup ? 'none' : '';
+      updateTotals();
+    }
+
+    function selectPayment(el, type) {
+      document.querySelectorAll('.pay-option').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+      el.querySelector('input').checked = true;
+      document.getElementById('cardFields').style.display = type === 'stripe' ? '' : 'none';
+      document.getElementById('transferInfo').style.display = type === 'transfer' ? '' : 'none';
+      const btn = document.getElementById('submitBtn');
+      const total = (subtotal + shippingCost).toFixed(2);
+      btn.textContent = '';
+      const span = document.createElement('span');
+      span.id = 'totalBtn';
+      span.textContent = total + ' €';
+      btn.textContent = type === 'stripe' ? 'Pagar con Stripe · ' : 'Confirmar Pedido · ';
+      btn.appendChild(span);
+    }
+
+    function fmtCard(el) {
+      let v = el.value.replace(/\D/g,'').slice(0,16);
+      el.value = v.replace(/(\d{4})/g,'$1 ').trim();
+    }
+    function fmtDate(el) {
+      let v = el.value.replace(/\D/g,'').slice(0,4);
+      if (v.length >= 3) v = v.slice(0,2) + ' / ' + v.slice(2);
+      el.value = v;
+    }
+
+    async function submitOrder(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.textContent = 'Procesando...';
+
+      // ⚠️ Aquí necesitas un backend para:
+      // 1. Guardar el pedido en tu base de datos
+      // 2. Enviar el email de confirmación
+      // Puedes usar Firebase, Supabase, Node.js + Express, etc.
+
+      // Simulación:
+      await new Promise(r => setTimeout(r, 1500));
+
+      document.getElementById('checkoutPage').style.display = 'none';
+      document.getElementById('successScreen').style.display = 'flex';
+    }
+
+    updateTotals();
+  </script>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kaori – Producto</title>
+  <link href__="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Nunito', sans-serif; background: #faf8f5; color: #2d1b69; }
+    h1,h2,h3 { font-family: 'Cormorant Garamond', serif; }
+    a { text-decoration: none; color: inherit; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 72px; background: rgba(250,248,245,0.95); backdrop-filter: blur(8px); border-bottom: 1px solid #f3e8ff; }
+    .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; letter-spacing: 0.2em; color: #4c1d95; }
+    .nav-links { display: flex; gap: 2rem; }
+    .nav-links a { font-size: 0.85rem; color: #4b5563; }
+    .nav-links a:hover { color: #7c3aed; }
+    .nav-cart { background: #7c3aed; color: white; border: none; border-radius: 9999px; padding: 0.5rem 1.2rem; cursor: pointer; font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 600; }
+
+    .product-page { max-width: 80rem; margin: 0 auto; padding: 6rem 1.5rem 4rem; }
+    .breadcrumb { margin-bottom: 2rem; font-size: 0.875rem; }
+    .breadcrumb a { color: #7c3aed; display: inline-flex; align-items: center; gap: 0.3rem; }
+    .breadcrumb a:hover { color: #4c1d95; }
+
+    .product-grid { display: grid; gap: 3rem; }
+    @media(min-width: 1024px) { .product-grid { grid-template-columns: 1fr 1fr; gap: 4rem; } }
+
+    .main-image { aspect-ratio: 1; border-radius: 1.5rem; overflow: hidden; background: #f5f3ff; }
+    .main-image img { width: 100%; height: 100%; object-fit: cover; }
+    .thumbnails { display: flex; gap: 0.75rem; margin-top: 1rem; overflow-x: auto; }
+    .thumb { width: 80px; height: 80px; border-radius: 0.75rem; overflow: hidden; cursor: pointer; opacity: 0.6; border: 2px solid transparent; flex-shrink: 0; transition: all 0.2s; }
+    .thumb.active { opacity: 1; border-color: #7c3aed; }
+    .thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+    .badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+    .badge-cat { background: #f3e8ff; color: #7c3aed; }
+    .badge-featured { background: #7c3aed; color: white; }
+    .badge-discount { background: #ec4899; color: white; }
+    .badges { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+
+    .product-title { font-size: clamp(1.8rem, 4vw, 3rem); color: #2e0854; margin-bottom: 1rem; }
+    .price-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+    .price { font-size: 2rem; font-weight: 700; color: #4c1d95; }
+    .compare-price { font-size: 1.3rem; color: #9ca3af; text-decoration: line-through; }
+
+    .description { color: #4b5563; line-height: 1.8; margin-bottom: 1.5rem; }
+
+    .benefits-box { background: #faf5ff; border-radius: 1rem; padding: 1.2rem; margin-bottom: 1.5rem; }
+    .benefits-box h3 { font-family: 'Nunito', sans-serif; font-size: 0.95rem; font-weight: 700; color: #4c1d95; margin-bottom: 0.5rem; }
+    .benefits-box p { font-size: 0.875rem; color: #4b5563; }
+
+    .qty-row { display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .qty-control { display: flex; align-items: center; background: #f3e8ff; border-radius: 9999px; padding: 0.25rem; }
+    .qty-btn { width: 40px; height: 40px; border: none; background: transparent; cursor: pointer; font-size: 1.2rem; color: #4c1d95; border-radius: 50%; transition: background 0.15s; }
+    .qty-btn:hover { background: white; }
+    .qty-num { width: 48px; text-align: center; font-weight: 600; color: #2d1b69; }
+    .btn-cart { flex: 1; background: #7c3aed; color: white; border: none; border-radius: 9999px; padding: 1rem 1.5rem; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 1rem; cursor: pointer; transition: background 0.2s; }
+    .btn-cart:hover { background: #6d28d9; }
+
+    .shipping-info { border-top: 1px solid #f3e8ff; padding-top: 1.5rem; display: flex; flex-direction: column; gap: 0.8rem; }
+    .shipping-row { display: flex; align-items: center; gap: 0.75rem; font-size: 0.875rem; color: #4b5563; }
+    .ship-icon { font-size: 1.1rem; }
+
+    /* REVIEWS */
+    .reviews-section { margin-top: 5rem; }
+    .reviews-section h2 { font-size: 1.8rem; color: #4c1d95; margin-bottom: 2rem; }
+    .review-card { background: white; border-radius: 1rem; padding: 1.5rem; border: 1px solid #f3e8ff; margin-bottom: 1rem; }
+    .review-header { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
+    .review-author { font-weight: 700; color: #4c1d95; font-size: 0.9rem; }
+    .review-stars { color: #f59e0b; }
+    .review-title { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: #2d1b69; margin-bottom: 0.5rem; }
+    .review-content { color: #6b7280; font-size: 0.875rem; line-height: 1.7; }
+    .btn-review { background: #7c3aed; color: white; border: none; border-radius: 9999px; padding: 1rem 2rem; font-family: 'Nunito', sans-serif; font-weight: 700; cursor: pointer; font-size: 0.95rem; transition: background 0.2s; }
+    .btn-review:hover { background: #6d28d9; }
+
+    /* RELATED */
+    .related { margin-top: 4rem; }
+    .related h2 { font-size: 1.8rem; color: #4c1d95; margin-bottom: 2rem; }
+    .related-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1.5rem; }
+    .product-card { background: white; border-radius: 1rem; overflow: hidden; border: 1px solid #f3e8ff; }
+    .product-card img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+    .product-card .info { padding: 1rem; }
+    .product-card .info h4 { font-family: 'Cormorant Garamond', serif; font-size: 1rem; color: #4c1d95; margin-bottom: 0.3rem; }
+    .product-card .info .price { font-weight: 700; color: #7c3aed; font-size: 0.95rem; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href__="/" class="nav-logo">KAORI</a>
+    <div class="nav-links">
+      <a href__="/shop.html">Tienda</a>
+      <a href__="/about.html">Nosotras</a>
+      <a href__="/contact.html">Contacto</a>
+    </div>
+    <button class="nav-cart">🛒 Carrito (0)</button>
+  </nav>
+
+  <div class="product-page">
+    <nav class="breadcrumb">
+      <a href__="/shop.html">← Volver a la tienda</a>
+    </nav>
+
+    <div class="product-grid">
+      <!-- IMÁGENES -->
+      <div>
+        <div class="main-image">
+          <img id="mainImg" src="https://images.unsplash.com/photo-1602178478026-72d94a3e8e3f?w=800&q=80" alt="Producto" />
+        </div>
+        <div class="thumbnails">
+          <div class="thumb active" onclick="changeImage(this, 'https://images.unsplash.com/photo-1602178478026-72d94a3e8e3f?w=400&q=80')">
+            <img src="https://images.unsplash.com/photo-1602178478026-72d94a3e8e3f?w=400&q=80" alt="" />
+          </div>
+          <div class="thumb" onclick="changeImage(this, 'https://images.unsplash.com/photo-1557053910-d9eadeed1c58?w=400&q=80')">
+            <img src="https://images.unsplash.com/photo-1557053910-d9eadeed1c58?w=400&q=80" alt="" />
+          </div>
+        </div>
+      </div>
+
+      <!-- DETALLES -->
+      <div>
+        <div class="badges">
+          <span class="badge badge-cat">Velas</span>
+          <span class="badge badge-featured">✨ Destacado</span>
+          <span class="badge badge-discount">-20%</span>
+        </div>
+
+        <h1 class="product-title">Vela Artesanal de Lavanda</h1>
+
+        <div class="price-row">
+          <span class="price">18,00 €</span>
+          <span class="compare-price">22,00 €</span>
+        </div>
+
+        <p class="description">
+          Vela artesanal elaborada con cera de soja 100% natural y esencias puras de lavanda.
+          Creada a mano con intención para traer calma, relajación y energía positiva a tu hogar.
+          Tiempo de combustión aproximado: 40 horas.
+        </p>
+
+        <div class="benefits-box">
+          <h3>✨ Beneficios Energéticos</h3>
+          <p>La lavanda aporta calma, equilibrio emocional y favorece el descanso y la relajación profunda.</p>
+        </div>
+
+        <div class="qty-row">
+          <div class="qty-control">
+            <button class="qty-btn" onclick="changeQty(-1)">−</button>
+            <span class="qty-num" id="qty">1</span>
+            <button class="qty-btn" onclick="changeQty(1)">+</button>
+          </div>
+          <button class="btn-cart" onclick="addToCart()">🛒 Añadir al Carrito</button>
+        </div>
+
+        <div class="shipping-info">
+          <div class="shipping-row"><span class="ship-icon">📦</span> Empaquetado con mimo y cuidado</div>
+          <div class="shipping-row"><span class="ship-icon">🚚</span> Envío gratis a partir de 50€</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESEÑAS -->
+    <div class="reviews-section">
+      <h2>Reseñas</h2>
+      <div class="review-card">
+        <div class="review-header">
+          <span class="review-author">María G.</span>
+          <span class="review-stars">★★★★★</span>
+        </div>
+        <p class="review-title">¡Me encanta el aroma!</p>
+        <p class="review-content">La vela es preciosa y el olor es increíble. Se nota que está hecha con mucho cariño. La repetiré sin duda.</p>
+      </div>
+      <div class="review-card">
+        <div class="review-header">
+          <span class="review-author">Laura M.</span>
+          <span class="review-stars">★★★★★</span>
+        </div>
+        <p class="review-title">Perfecta para regalar</p>
+        <p class="review-content">La compré como regalo y fue un éxito total. El packaging es muy bonito y la calidad es excelente.</p>
+      </div>
+      <br/>
+      <button class="btn-review">⭐ Escribir una reseña</button>
+    </div>
+
+    <!-- RELACIONADOS -->
+    <div class="related">
+      <h2>También te puede gustar</h2>
+      <div class="related-grid">
+        <div class="product-card">
+          <a href__="/product.html?id=2">
+            <img src="https://images.unsplash.com/photo-1557053910-d9eadeed1c58?w=400&q=80" alt="Amatista" />
+          </a>
+          <div class="info"><h4>Amatista Natural</h4><p class="price">24,00 €</p></div>
+        </div>
+        <div class="product-card">
+          <a href__="/product.html?id=3">
+            <img src="https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=400&q=80" alt="Collar" />
+          </a>
+          <div class="info"><h4>Collar de Cuarzo</h4><p class="price">32,00 €</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let qty = 1;
+    function changeQty(delta) {
+      qty = Math.max(1, qty + delta);
+      document.getElementById('qty').textContent = qty;
+    }
+    function changeImage(thumb, src) {
+      document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+      thumb.classList.add('active');
+      document.getElementById('mainImg').src = src;
+    }
+    function addToCart() {
+      alert(`Añadido al carrito: ${qty} × Vela Artesanal de Lavanda`);
+    }
+  </script>
+</body>
+</html>
